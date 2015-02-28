@@ -26,8 +26,9 @@ public class PlayerController : MonoBehaviour
 
 		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
 		Vector3 movement2 = new Vector3 (0.0f, fly, 0.0f);
-		rigidbody.AddForce (movement * speed* Time.deltaTime);
-
+		if (jumpControl && !Input.GetButton("Jump")) {
+			rigidbody.AddForce (movement * speed * Time.deltaTime);
+		}
 		if (jumpControl) {
 			if (Input.GetButton("Jump"))
 				rigidbody.AddForce (movement2 * Time.deltaTime);
