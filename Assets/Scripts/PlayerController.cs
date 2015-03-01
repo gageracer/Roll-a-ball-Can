@@ -5,37 +5,52 @@ public class PlayerController : MonoBehaviour
 {	
 	public float speed;
 	public float fly;
+	public float heightCont;
 	public GUIText countText;
 	public GUIText winText;
 	private int count;
-	private bool jumpControl;
+	private int jumpControl;
+
 
 
 	void Start()
 	{
-		jumpControl = true;
+
+
+
 		count = 0;
 		SetCountText ();
 		winText.text = "";
 	}
-
+	
 	void FixedUpdate()
 	{
+		Debug.Log (jumpControl);
 		float moveHorizontal = Input.GetAxis("Horizontal");
 		float moveVertical = Input.GetAxis ("Vertical");
 
 		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
 		Vector3 movement2 = new Vector3 (0.0f, fly, 0.0f);
-		if (jumpControl && !Input.GetButton("Jump")) {
+		GroundCheck ();
+		if (jumpControl==1) {
 			rigidbody.AddForce (movement * speed * Time.deltaTime);
-		}
-		if (jumpControl) {
-			if (Input.GetButton("Jump"))
+			if (Input.GetButton("Jump")){
 				rigidbody.AddForce (movement2 * Time.deltaTime);
+				jumpControl = 0;
+
+			}
 		}
 
+	}
 
-
+	void GroundCheck()
+	{
+		RaycastHit hit;
+		Ray isGround = new Ray (transform.position, Vector3.down);
+		if(Physics.Raycast(isGround,out hit, heightCont))
+		    {
+			jumpControl = 1;
+			}
 
 	}
 	void OnTriggerEnter(Collider other)
@@ -46,31 +61,12 @@ public class PlayerController : MonoBehaviour
 			SetCountText ();
 		}
 	}
-	void OnCollisionEnter(Collision other)
-	{
-		if (other.gameObject.tag == "Ground") {
-			Debug.Log ("Yere degdi");
-			jumpControl = true;
-		}
-	}
-
-
-
-	void OnCollisionExit(Collision other)
-	{
-
-		if (other.gameObject.tag == "Ground") {
-			Debug.Log("Yerden ayrildi");
-			jumpControl = false;
-		
-		}
-	}
-
 	void SetCountText()
 	{
 		countText.text = " Count: " + count.ToString ();
 		if (count >= 12) {
-			winText.text = "YOU WIN!";		
+			winText.text = "YOU WIN!";
+			gameObject.renderer.material.color = Color.red;
 		}
 	}
 }

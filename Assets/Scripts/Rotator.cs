@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Rotator : MonoBehaviour {
 
+	public int anan = 5;
 	// Update is called once per frame
 	void Update () {
 	
