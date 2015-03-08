@@ -3,44 +3,72 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour 
 {	
+	public GameObject pickUps;
 	public float speed;
+	public float airSpeed;
 	public float fly;
 	public float heightCont;
+	public int jumpControl;
+
+
 	public GUIText countText;
 	public GUIText winText;
+
+
 	private int count;
-	private int jumpControl;
+	private int pickles;
+	private int loadedLvl;
 
-
-
+	void Awake()
+	{
+		loadedLvl = Application.loadedLevel;
+	}
 	void Start()
 	{
 
-
-
+		HowManyPicks ();
+		Debug.Log (pickles);
 		count = 0;
 		SetCountText ();
 		winText.text = "";
 	}
 	
-	void FixedUpdate()
-	{
-		Debug.Log (jumpControl);
-		float moveHorizontal = Input.GetAxis("Horizontal");
+	void FixedUpdate(){
+		
+		float moveHorizontal = Input.GetAxis ("Horizontal");
 		float moveVertical = Input.GetAxis ("Vertical");
+		
 
 		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
-		Vector3 movement2 = new Vector3 (0.0f, fly, 0.0f);
+		Vector3 jump = new Vector3 (0.0f, fly, 0.0f);
+
+	
+		RestartLevel ();
 		GroundCheck ();
-		if (jumpControl==1) {
-			GetComponent<Rigidbody>().AddForce (movement * speed * Time.deltaTime);
-			if (Input.GetButton("Jump")){
-				GetComponent<Rigidbody>().AddForce (movement2 * Time.deltaTime);
-				jumpControl = 0;
+		if (jumpControl >= 0 ) {
+				
+			GetComponent<Rigidbody> ().AddForce (movement * speed * Time.deltaTime);
 
+			if (Input.GetButton ("Jump")) {
+				GetComponent<Rigidbody> ().AddForce (jump * Time.deltaTime);
+				jumpControl--;
+
+			} else {
+				GetComponent<Rigidbody> ().AddForce (movement * airSpeed * Time.deltaTime);
 			}
+		
+		
 		}
+	}	
 
+	void RestartLevel(){
+		if (transform.position.y < -10)
+		Application.LoadLevel (loadedLvl);
+	}
+
+	void HowManyPicks(){
+
+		pickles = pickUps.transform.childCount;
 	}
 
 	void GroundCheck()
@@ -49,7 +77,7 @@ public class PlayerController : MonoBehaviour
 		Ray isGround = new Ray (transform.position, Vector3.down);
 		if(Physics.Raycast(isGround,out hit, heightCont))
 		    {
-			jumpControl = 1;
+			jumpControl = 2;
 			}
 
 	}
@@ -64,7 +92,7 @@ public class PlayerController : MonoBehaviour
 	void SetCountText()
 	{
 		countText.text = " Count: " + count.ToString ();
-		if (count >= 12) {
+		if (count == pickles) {
 			winText.text = "YOU WIN!";
 			gameObject.GetComponent<Renderer>().material.color = Color.red;
 		}
