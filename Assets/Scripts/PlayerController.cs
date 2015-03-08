@@ -8,16 +8,20 @@ public class PlayerController : MonoBehaviour
 	public float airSpeed;
 	public float fly;
 	public float heightCont;
-	public int jumpControl;
+
 
 
 	public GUIText countText;
 	public GUIText winText;
 
-
+	private float normalSpeed = 500;
+	private float redSpeed = 1500;
 	private int count;
 	private int pickles;
 	private int loadedLvl;
+	private bool dblJump = false;
+	private bool jumpControl;
+	public bool bluebuff = false;
 
 	void Awake()
 	{
@@ -35,31 +39,59 @@ public class PlayerController : MonoBehaviour
 	
 	void FixedUpdate(){
 		
+		RestartLevel ();
+		GroundCheck ();
+		GreenBuff ();
+		BlueBuff ();
+		Movements ();
+
+	}
+
+	void Movements(){
+
 		float moveHorizontal = Input.GetAxis ("Horizontal");
 		float moveVertical = Input.GetAxis ("Vertical");
 		
-
 		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
 		Vector3 jump = new Vector3 (0.0f, fly, 0.0f);
 
-	
-		RestartLevel ();
-		GroundCheck ();
-		if (jumpControl >= 0 ) {
-				
-			GetComponent<Rigidbody> ().AddForce (movement * speed * Time.deltaTime);
+		GetComponent<Rigidbody> ().AddForce (movement * speed * Time.deltaTime);
 
-			if (Input.GetButton ("Jump")) {
+		if (jumpControl) {
+			if (Input.GetButtonDown ("Jump")) {
 				GetComponent<Rigidbody> ().AddForce (jump * Time.deltaTime);
-				jumpControl--;
-
-			} else {
-				GetComponent<Rigidbody> ().AddForce (movement * airSpeed * Time.deltaTime);
+				jumpControl = !jumpControl;
 			}
-		
-		
+		} else if (!jumpControl && dblJump) {
+			if (Input.GetButtonDown ("Jump")) {
+				GetComponent<Rigidbody> ().AddForce (jump * Time.deltaTime);
+				dblJump = !dblJump;
+			}
+		} else if (!jumpControl && bluebuff) {
+			if (Input.GetButton ("Jump")) {
+				GetComponent<Rigidbody> ().AddForce (jump * 0.02f * Time.deltaTime);
+			}
 		}
-	}	
+
+	}
+
+	void BlueBuff (){
+
+		if (GetComponent<Rigidbody> ().velocity.y < 0 && gameObject.GetComponent<Renderer> ().material.color == Color.blue) {
+
+			bluebuff = true;
+
+		} else 
+			bluebuff = false;
+
+	}
+
+	void GreenBuff(){
+		if (gameObject.GetComponent<Renderer> ().material.color == Color.green && jumpControl)
+			dblJump = true;
+		else if (gameObject.GetComponent<Renderer> ().material.color != Color.green)
+			dblJump = false;
+	}
 
 	void RestartLevel(){
 		if (transform.position.y < -10)
@@ -77,13 +109,27 @@ public class PlayerController : MonoBehaviour
 		Ray isGround = new Ray (transform.position, Vector3.down);
 		if(Physics.Raycast(isGround,out hit, heightCont))
 		    {
-			jumpControl = 2;
+			jumpControl = true;
 			}
 
 	}
 	void OnTriggerEnter(Collider other)
-	{
-		if (other.gameObject.tag == "PickUp") {
+	{		
+		if (other.gameObject.tag == "PickUpRed") {
+			speed = redSpeed;
+			gameObject.GetComponent<Renderer> ().material.color = Color.red;
+			other.gameObject.SetActive (false);
+			count++;
+			SetCountText ();
+		} else if (other.gameObject.tag == "PickUpGreen") {
+			speed = normalSpeed;
+			gameObject.GetComponent<Renderer> ().material.color = Color.green;
+			other.gameObject.SetActive (false);
+			count++;
+			SetCountText ();
+		} else if (other.gameObject.tag == "PickUpBlue") {
+			speed = normalSpeed;
+			gameObject.GetComponent<Renderer> ().material.color = Color.blue;
 			other.gameObject.SetActive (false);
 			count++;
 			SetCountText ();
