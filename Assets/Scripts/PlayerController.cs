@@ -152,7 +152,7 @@ public class PlayerController : MonoBehaviour
 		countText.text = " Count: " + count.ToString ();
 		if (count == pickles) {
 			winText.text = "YOU WIN!";
-			gameObject.GetComponent<Renderer>().material.color = Color.red;
+
 		}
 	}
 }
