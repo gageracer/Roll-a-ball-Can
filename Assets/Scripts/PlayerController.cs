@@ -8,20 +8,22 @@ public class PlayerController : MonoBehaviour
 	public float airSpeed;
 	public float fly;
 	public float heightCont;
-
+	private bool redBuff = false;
 
 
 	public GUIText countText;
 	public GUIText winText;
 
 	private float normalSpeed = 500;
-	private float redSpeed = 1500;
+	private float redSpeed = 1000;
 	private int count;
 	private int pickles;
 	private int loadedLvl;
 	private bool dblJump = false;
 	private bool jumpControl;
-	public bool bluebuff = false;
+	private bool bluebuff = false;
+
+
 
 	void Awake()
 	{
@@ -55,24 +57,33 @@ public class PlayerController : MonoBehaviour
 		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
 		Vector3 jump = new Vector3 (0.0f, fly, 0.0f);
 
-		GetComponent<Rigidbody> ().AddForce (movement * speed * Time.deltaTime);
+
 
 		if (jumpControl) {
+			GetComponent<Rigidbody> ().AddForce (movement * speed * Time.deltaTime);
+
 			if (Input.GetButtonDown ("Jump")) {
 				GetComponent<Rigidbody> ().AddForce (jump * Time.deltaTime);
 				jumpControl = !jumpControl;
 			}
-		} else if (!jumpControl && dblJump) {
-			if (Input.GetButtonDown ("Jump")) {
-				GetComponent<Rigidbody> ().AddForce (jump * Time.deltaTime);
-				dblJump = !dblJump;
-			}
-		} else if (!jumpControl && bluebuff) {
-			if (Input.GetButton ("Jump")) {
-				GetComponent<Rigidbody> ().AddForce (jump * 0.02f * Time.deltaTime);
-			}
-		}
+		} else {
+			GetComponent<Rigidbody> ().AddForce (movement * airSpeed * Time.deltaTime);
+			if (dblJump) {
+				if (Input.GetButtonDown ("Jump")) {
 
+					GetComponent<Rigidbody> ().AddForce (jump * Time.deltaTime);
+					dblJump = !dblJump;
+				}
+			} else if (bluebuff) {
+				if (Input.GetButton ("Jump")) {
+					GetComponent<Rigidbody> ().AddForce (jump * 0.02f * Time.deltaTime);
+				}
+			}  
+		}
+		if (redBuff) {
+			GetComponent<Rigidbody> ().AddForce (movement * redSpeed * Time.deltaTime,ForceMode.Impulse);
+			redBuff = !redBuff;
+		}
 	}
 
 	void BlueBuff (){
@@ -116,7 +127,7 @@ public class PlayerController : MonoBehaviour
 	void OnTriggerEnter(Collider other)
 	{		
 		if (other.gameObject.tag == "PickUpRed") {
-			speed = redSpeed;
+			redBuff = true;
 			gameObject.GetComponent<Renderer> ().material.color = Color.red;
 			other.gameObject.SetActive (false);
 			count++;
@@ -135,6 +146,7 @@ public class PlayerController : MonoBehaviour
 			SetCountText ();
 		}
 	}
+	
 	void SetCountText()
 	{
 		countText.text = " Count: " + count.ToString ();
