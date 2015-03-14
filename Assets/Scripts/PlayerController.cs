@@ -8,21 +8,20 @@ public class PlayerController : MonoBehaviour
 	public float airSpeed;
 	public float fly;
 	public float heightCont;
-	private bool redBuff = false;
+
 
 
 	public GUIText countText;
 	public GUIText winText;
 
-	private float normalSpeed = 500;
 	private float redSpeed = 1000;
 	private int count;
 	private int pickles;
 	private int loadedLvl;
-	private bool dblJump = false;
+	private int dblJump = 0;
 	private bool jumpControl;
 	private bool bluebuff = false;
-
+	private bool redBuff = false;
 
 
 	void Awake()
@@ -68,11 +67,11 @@ public class PlayerController : MonoBehaviour
 			}
 		} else {
 			GetComponent<Rigidbody> ().AddForce (movement * airSpeed * Time.deltaTime);
-			if (dblJump) {
+			if (dblJump > 0) {
 				if (Input.GetButtonDown ("Jump")) {
 
 					GetComponent<Rigidbody> ().AddForce (jump * Time.deltaTime);
-					dblJump = !dblJump;
+					dblJump--;
 				}
 			} else if (bluebuff) {
 				if (Input.GetButton ("Jump")) {
@@ -99,9 +98,9 @@ public class PlayerController : MonoBehaviour
 
 	void GreenBuff(){
 		if (gameObject.GetComponent<Renderer> ().material.color == Color.green && jumpControl)
-			dblJump = true;
+			dblJump = 1;
 		else if (gameObject.GetComponent<Renderer> ().material.color != Color.green)
-			dblJump = false;
+			dblJump = 0;
 	}
 
 	void RestartLevel(){
@@ -133,13 +132,13 @@ public class PlayerController : MonoBehaviour
 			count++;
 			SetCountText ();
 		} else if (other.gameObject.tag == "PickUpGreen") {
-			speed = normalSpeed;
+			dblJump = 2;
 			gameObject.GetComponent<Renderer> ().material.color = Color.green;
 			other.gameObject.SetActive (false);
 			count++;
 			SetCountText ();
 		} else if (other.gameObject.tag == "PickUpBlue") {
-			speed = normalSpeed;
+
 			gameObject.GetComponent<Renderer> ().material.color = Color.blue;
 			other.gameObject.SetActive (false);
 			count++;
