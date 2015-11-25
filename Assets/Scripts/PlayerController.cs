@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
 	private int pickles;
 	private int loadedLvl;
 	private int dblJump = 0;
-	private bool jumpControl;
+	public bool jumpControl;
 	private bool bluebuff = false;
 	private bool redBuff = false;
 
@@ -38,20 +38,20 @@ public class PlayerController : MonoBehaviour
 		winText.text = "";
 	}
 	
-	void FixedUpdate(){
+	void Update(){
 		
 
 		GroundCheck ();
 		GreenBuff ();
 		BlueBuff ();
 		Movements ();
-
+		RestartLevel ();
 	}
-	void Update(){
+	/*void Update(){
 
 		RestartLevel ();
 
-	}
+	}*/
 
 
 

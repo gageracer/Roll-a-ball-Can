@@ -3,9 +3,11 @@ using System.Collections;
 
 public class FallingPlat : MonoBehaviour {
 
+	public float reactionTime = 5.0f;
+
 	private float timeStamp;
 	private bool move;
-	private float reactionTime = 5.0f;
+
 
 	// Use this for initialization
 	void Start () {

@@ -32,8 +32,8 @@ public class CameraController : MonoBehaviour {
 		Quaternion normalX = Quaternion.Euler (45,0,0);
 		Quaternion normalY = Quaternion.Euler (45,0,0);
 
-		int X = (int) Input.GetAxis ("Vertical");
-		int Y = (int) Input.GetAxis ("Horizontal");
+		int X = (int) Input.GetAxis ("Vertical_P1");
+		int Y = (int) Input.GetAxis ("Horizontal_P1");
 		switch (X) {
 		case 1:
 			transform.rotation = Quaternion.Slerp (transform.rotation, forwardX, smooth * Time.deltaTime);
