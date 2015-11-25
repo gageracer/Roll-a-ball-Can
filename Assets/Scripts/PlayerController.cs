@@ -75,7 +75,8 @@ public class PlayerController : MonoBehaviour
 				jumpControl = !jumpControl;
 			}
 		} else {
-			GetComponent<Rigidbody> ().AddForce (movement * airSpeed * Time.deltaTime);
+			GetComponent<Rigidbody> ().AddForce (movement * airSpeed * Time.deltaTime);//For going x and z axis in air
+			//GetComponent<Rigidbody> ().AddForce (jump * 0.02f * Time.deltaTime);//For free falling with velocity?
 			if (dblJump > 0) {
 				if (Input.GetButtonDown ("Jump_P1")) {
 
