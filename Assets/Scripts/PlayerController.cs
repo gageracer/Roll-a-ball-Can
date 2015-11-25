@@ -40,18 +40,27 @@ public class PlayerController : MonoBehaviour
 	
 	void FixedUpdate(){
 		
-		RestartLevel ();
+
 		GroundCheck ();
 		GreenBuff ();
 		BlueBuff ();
 		Movements ();
 
 	}
+	void Update(){
+
+		RestartLevel ();
+
+	}
+
+
 
 	void Movements(){
 
-		float moveHorizontal = Input.GetAxis ("Horizontal");
-		float moveVertical = Input.GetAxis ("Vertical");
+
+
+		float moveHorizontal = Input.GetAxis ("Horizontal_P1");
+		float moveVertical = Input.GetAxis ("Vertical_P1");
 		
 		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
 		Vector3 jump = new Vector3 (0.0f, fly, 0.0f);
@@ -61,20 +70,20 @@ public class PlayerController : MonoBehaviour
 		if (jumpControl) {
 			GetComponent<Rigidbody> ().AddForce (movement * speed * Time.deltaTime);
 
-			if (Input.GetButtonDown ("Jump")) {
+			if (Input.GetButtonDown ("Jump_P1")) {
 				GetComponent<Rigidbody> ().AddForce (jump * Time.deltaTime);
 				jumpControl = !jumpControl;
 			}
 		} else {
 			GetComponent<Rigidbody> ().AddForce (movement * airSpeed * Time.deltaTime);
 			if (dblJump > 0) {
-				if (Input.GetButtonDown ("Jump")) {
+				if (Input.GetButtonDown ("Jump_P1")) {
 
 					GetComponent<Rigidbody> ().AddForce (jump * Time.deltaTime);
 					dblJump--;
 				}
 			} else if (bluebuff) {
-				if (Input.GetButton ("Jump")) {
+				if (Input.GetButton ("Jump_P1")) {
 					GetComponent<Rigidbody> ().AddForce (jump * 0.02f * Time.deltaTime);
 				}
 			}  
@@ -104,8 +113,8 @@ public class PlayerController : MonoBehaviour
 	}
 
 	void RestartLevel(){
-		if (transform.position.y < -10)
-		Application.LoadLevel (loadedLvl);
+		if (transform.position.y < -10 || Input.GetKeyDown(KeyCode.R))
+		    Application.LoadLevel (loadedLvl);
 	}
 
 	void HowManyPicks(){
