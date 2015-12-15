@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour 
+public class PlayerController : NetworkBehaviour 
 {	
 	public GameObject pickUps;
 	public float speed;
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour
 	}
 	void Start()
 	{
-
+		//WhichPlayer ();
 		HowManyPicks ();
 		Debug.Log (pickles);
 		count = 0;
@@ -40,6 +41,8 @@ public class PlayerController : MonoBehaviour
 	
 	void Update(){
 		
+	//	if (!isLocalPlayer)
+	//		return;
 
 		GroundCheck ();
 		GreenBuff ();
@@ -53,8 +56,15 @@ public class PlayerController : MonoBehaviour
 
 	}*/
 
+	void WhichPlayer(){
 
+		if (GameObject.FindWithTag ("HostPlayer") == null)
+			this.tag = "HostPlayer";
+		else 
+			this.tag = "ClientPlayer";
+	}
 
+	
 	void Movements(){
 
 
