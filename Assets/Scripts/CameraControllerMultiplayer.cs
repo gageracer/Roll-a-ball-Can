@@ -14,12 +14,8 @@ public class CameraControllerMultiplayer : MonoBehaviour {
 	}
 	void WhichPlayer(){
 		if (player == null) {
-			if (GameObject.FindWithTag ("HostPlayer") !=null)
-				player = GameObject.FindWithTag ("ClientPlayer");
-			else 
-				player = GameObject.FindWithTag ("HostPlayer");
+			player = GameObject.FindWithTag ("HostPlayer");
 		}
-			
 	}
 
 	// Update is called once per frame
