@@ -14,7 +14,7 @@ public class PlayerMultiController : NetworkBehaviour
 	
 	public GUIText countText;
 	public GUIText winText;
-	
+
 	private float redSpeed = 1000;
 	private int count;
 	private int pickles;
@@ -30,7 +30,7 @@ public class PlayerMultiController : NetworkBehaviour
 		loadedLvl = Application.loadedLevel;
 	}
 	void Start()
-	{
+	{	
 		WhichPlayer ();
 		HowManyPicks ();
 		Debug.Log (pickles);
@@ -55,6 +55,21 @@ public class PlayerMultiController : NetworkBehaviour
 		RestartLevel ();
 
 	}*/
+
+	/*void OnNetworkInstantiate(NetworkMessageInfo info) {
+		NetworkView nView = GetComponent<NetworkView> ();
+		if (nView.isMine) {
+			Camera.main.GetComponent<CameraControllerMultiplayer>().player = gameObject;
+			Debug.Log ("New object instanted by me");
+		} else {
+			Debug.Log ("New object instantiated by " + info.sender);
+		}
+	}*/
+	public override void OnStartLocalPlayer()
+	{
+		Camera.main.GetComponent<CameraControllerMultiplayer>().player = gameObject;
+	}
+
 	
 	void WhichPlayer(){
 		

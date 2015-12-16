@@ -12,22 +12,18 @@ public class CameraControllerMultiplayer : MonoBehaviour {
 
 		offset = transform.position;
 	}
-	void WhichPlayer(){
-		if (player == null) {
-			player = GameObject.FindWithTag ("HostPlayer");
-		}
-	}
+
+
 
 	// Update is called once per frame
 	void LateUpdate () {
 		 
-		WhichPlayer ();
+		
 		transform.position = player.transform.position + offset;
 		CameraMovement ();
 
-		
-		
 	}
+	
 	void CameraMovement()
 	{	
 		Quaternion forwardX = Quaternion.Euler (30, 0, 0);
