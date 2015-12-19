@@ -15,6 +15,7 @@ public class PlayerMultiController : NetworkBehaviour
 	public GUIText countText;
 	public GUIText winText;
 
+	private Vector3 startPos;
 	private float redSpeed = 1000;
 	private int count;
 	private int pickles;
@@ -31,6 +32,7 @@ public class PlayerMultiController : NetworkBehaviour
 	}
 	void Start()
 	{	
+		startPos = transform.position;
 		WhichPlayer ();
 		HowManyPicks ();
 		Debug.Log (pickles);
@@ -65,6 +67,28 @@ public class PlayerMultiController : NetworkBehaviour
 			Debug.Log ("New object instantiated by " + info.sender);
 		}
 	}*/
+
+	[ClientRpc]
+	void RpcRespawn(){
+	
+	if (isLocalPlayer) {
+
+			transform.position = startPos;
+		
+		}
+	}
+
+	[Command]
+	void CmdRespawn(){
+		
+		if (isLocalPlayer) {
+			
+			transform.position = startPos;
+			
+		}
+	}
+
+
 	public override void OnStartLocalPlayer()
 	{
 		Camera.main.GetComponent<CameraControllerMultiplayer>().player = gameObject;
@@ -140,7 +164,8 @@ public class PlayerMultiController : NetworkBehaviour
 	
 	void RestartLevel(){
 		if (transform.position.y < -10 || Input.GetKeyDown(KeyCode.R))
-			Application.LoadLevel (loadedLvl);
+			RpcRespawn();
+		//	CmdRespawn();
 	}
 	
 	void HowManyPicks(){
