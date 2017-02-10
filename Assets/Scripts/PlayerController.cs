@@ -39,7 +39,7 @@ public class PlayerController : NetworkBehaviour
 		winText.text = "";
 	}
 	
-	void Update(){
+	void FixedUpdate(){
 		
 	//	if (!isLocalPlayer)
 	//		return;
